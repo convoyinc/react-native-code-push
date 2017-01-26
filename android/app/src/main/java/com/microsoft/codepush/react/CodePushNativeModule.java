@@ -31,6 +31,8 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CodePushNativeModule extends ReactContextBaseJavaModule {
     private String mBinaryContentsHash = null;
@@ -159,14 +161,18 @@ public class CodePushNativeModule extends ReactContextBaseJavaModule {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                        Logger logger = Logger.getAnonymousLogger();
+                        logger.log(Level.SEVERE, "HEY! Lets attempt to restart!");
                     try {
                         recreateMethod.invoke(instanceManager);
                         mCodePush.initializeUpdateAfterRestart();
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "HEY! trying to restart instance and its throwing", e);
                         // The recreation method threw an unknown exception
                         // so just simply fallback to restarting the Activity (if it exists)
                         loadBundleLegacy();
                     }
+                    logger.log(Level.SEVERE, "HEY! Finished restarting!");
                 }
             });
 
